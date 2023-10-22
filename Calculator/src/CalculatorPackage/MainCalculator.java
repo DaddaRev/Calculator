@@ -10,7 +10,8 @@
  * NOTES:
  * -Once the operation and the type of operation have been selected, the 2 numbers must be entered to
  * return to the starting menu. 
- * -Division by zero between int numbers will generate an error that closes the calculator. 
+ * -If an invalid value is entered when a number is requested, the second number must also be entered
+ *  before returning to the menu.
  * -Division by zero between double numbers is supported (result = infinity).
  *
  */
@@ -86,9 +87,8 @@ public class MainCalculator {
 				String input = null;
 				input = s.nextLine();
 				
-				if(!input.equals("esc"))     //esc to fast quit the calculator
+				if(input.equals("+") || input.equals("-") || input.equals("/") || input.equals("*") || input.equals("%"))     
 				{
-					
 					System.out.println("\nint or double operation? (i = int, d = double, r = reset)\n");
 					
 					String operation_type = null;
@@ -96,26 +96,34 @@ public class MainCalculator {
 					
 					if(operation_type.equals("i")) 		 //Managing operations if user entered "int" type
 					{
-						int first_number = 0;
-						int second_number = 0;
-						int result = 0;
-						
-						first_number = getIntNumber(s);  	//Getting the first number
-						second_number = getIntNumber(s);	//Getting the second number
-						
-						switch (input) {
-							case "+": result = first_number + second_number; break;
-							case "-": result = first_number - second_number; break;
-							case "*": result = first_number * second_number; break;
-							case "/": result = first_number/second_number; break;
-							case "%": result = first_number%second_number; break;
-							default:
-							{
-								System.out.println("\nUnknown operation or invalid syntax\nRetry..\n");
-								result = 0;
+						try
+						{
+							int first_number = 0;
+							int second_number = 0;
+							int result = 0;
+							
+							first_number = getIntNumber(s);  	//Getting the first number
+							second_number = getIntNumber(s);	//Getting the second number
+							
+							switch (input) {
+								case "+": result = first_number + second_number; break;
+								case "-": result = first_number - second_number; break;
+								case "*": result = first_number * second_number; break;
+								case "/": result = first_number/second_number; break;
+								case "%": result = first_number%second_number; break;
+								default:
+								{
+									System.out.println("\nUnknown operation or invalid syntax\nRetry..\n");
+									result = 0;
+								}
 							}
+							System.out.println("\nResult (int): " + result + "\n\n");
+							
 						}
-						System.out.println("\nResult (int): " + result + "\n\n");
+						catch (ArithmeticException af)  	//Management of division by zero (exception in int numbers)
+						{
+							System.out.println("\nException: Can't divide by zero!\n");
+						}	
 						
 					}else if(operation_type.equals("d")) 	//Managing operations if user entered "double" type
 						{
@@ -134,7 +142,7 @@ public class MainCalculator {
 								case "%": resultDouble = first_number%second_number; break;
 								default:
 								{
-									System.out.println("\nUnknown operation or invalid syntax\nRetry..\n");
+									System.out.println("\nInvalid syntax\nRetry..\n");
 									resultDouble = 0;
 								}
 							}
@@ -151,17 +159,19 @@ public class MainCalculator {
 					
 						s.nextLine();		
 				}else {
-					System.out.println("\nClosing...\n");
-					return;
+					if(input.equals("esc"))  //esc to fast quit the calculator
+					{
+						System.out.println("\nClosing...\n");
+						return;
+					}else
+					{
+						System.out.println("\nUnknow operation, retry..\n");
+					}
 				}
 			}
 		}
 		catch (NumberFormatException nf) {
 			System.out.println("Exception: NumberFormatException!");
-		}
-		catch (ArithmeticException af)  	//Management of division by zero (exception in int numbers)
-		{
-			System.out.println("\nException: Can't divide by zero!\n");
 		}
 		finally
 		{
